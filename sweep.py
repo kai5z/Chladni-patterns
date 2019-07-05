@@ -59,8 +59,8 @@ def Bb(ix):
 def Bs(ix):
     return Matrix([[dNNx[ix],-NN[ix],0],[dNNy[ix],0,-NN[ix]]])
 
-Bb_all = zeros((3,0))
-Bs_all = zeros((2,0))
+Bb_all = zeros(3,0)
+Bs_all = zeros(2,0)
 
 for i in range(0,4):
     Bb_all = Bb_all.row_join(Bb(i))
@@ -88,14 +88,14 @@ for i in range(0,4):
 for i in range(0,4):
     expr_f[i*3] = q*integrate(integrate(NN[i]*NN[j],(xi,-1,1)),(ny,-1,1))
 
-print "Element k- and m-matrix symbolic evaluation done"
+print("Element k- and m-matrix symbolic evaluation done")
 
 #Evaluate element k- and m-matrix numerically
 ke = expr_ke.applyfunc(lambda a: a.subs([(w_e,element_w),(h_e,element_h)]).evalf())
 km = expr_km.applyfunc(lambda a: a.subs([(w_e,element_w),(h_e,element_h)]).evalf())
 f = expr_f.applyfunc(lambda a: a.subs([(w_e,element_w),(h_e,element_h)]).evalf())
 
-print "Element k- and m-matrix numeric evaluation done"
+print("Element k- and m-matrix numeric evaluation done")
 
 #Global nodes
 nDOF = ((w_i+1)*(h_i+1)*3)
@@ -120,12 +120,12 @@ for el_i in range(0,w_i*h_i):
         for b in range(0,12):
             K[loc_glob[el_i][a]][loc_glob[el_i][b]] += ke[a,b]
             M[loc_glob[el_i][a]][loc_glob[el_i][b]] += km[a,b]
-        F[loc_glob[el_i][a]] += f[a]
+        F[loc_glob[el_i][a]][0] += f[a]
 
-print "Global K- and M-matrix addition done"
+print("Global K- and M-matrix addition done")
 
 #Apply boundary conditions, allow sliding along a vertical axis in the middle
-ix_i = nDOF/3/2*3 #The middle vertical DOF
+ix_i = int(nDOF/3/2)*3 #The middle vertical DOF
 ix = range(ix_i+1,ix_i+3)
 K = np.delete(K, ix, axis=0)
 K = np.delete(K, ix, axis=1)
@@ -185,7 +185,7 @@ for i in range(0,350):
         else:
             plt.savefig('img'+str(int(i))+'.png', bbox_inches='tight')  
     plt.clf()
-close('all')
+    plt.close(fig)
 plt.plot(ssf,ssmag)
 plt.xscale('log')
 plt.yscale('log')
