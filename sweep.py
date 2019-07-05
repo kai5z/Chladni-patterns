@@ -125,7 +125,7 @@ for el_i in range(0,w_i*h_i):
 print("Global K- and M-matrix addition done")
 
 #Apply boundary conditions, allow sliding along a vertical axis in the middle
-ix_i = nDOF/3/2*3 #The middle vertical DOF
+ix_i = int(nDOF/3/2)*3 #The middle vertical DOF
 ix = range(ix_i+1,ix_i+3)
 K = np.delete(K, ix, axis=0)
 K = np.delete(K, ix, axis=1)
