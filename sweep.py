@@ -185,7 +185,7 @@ for i in range(0,350):
         else:
             plt.savefig('img'+str(int(i))+'.png', bbox_inches='tight')  
     plt.clf()
-close('all')
+    plt.close(fig)
 plt.plot(ssf,ssmag)
 plt.xscale('log')
 plt.yscale('log')
