@@ -120,7 +120,7 @@ for el_i in range(0,w_i*h_i):
         for b in range(0,12):
             K[loc_glob[el_i][a]][loc_glob[el_i][b]] += ke[a,b]
             M[loc_glob[el_i][a]][loc_glob[el_i][b]] += km[a,b]
-        F[loc_glob[el_i][a]] += f[a]
+        F[loc_glob[el_i][a]][0] += f[a]
 
 print("Global K- and M-matrix addition done")
 
