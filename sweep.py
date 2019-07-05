@@ -59,8 +59,8 @@ def Bb(ix):
 def Bs(ix):
     return Matrix([[dNNx[ix],-NN[ix],0],[dNNy[ix],0,-NN[ix]]])
 
-Bb_all = zeros((3,0))
-Bs_all = zeros((2,0))
+Bb_all = zeros(3,0)
+Bs_all = zeros(2,0)
 
 for i in range(0,4):
     Bb_all = Bb_all.row_join(Bb(i))
