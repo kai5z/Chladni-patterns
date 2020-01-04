@@ -145,10 +145,10 @@ for i in range(0,350):
     current_f = 160**(1.01+i/400.0)
     omega = 2*np.pi*current_f
         
-    eplo_p = np.dot(np.linalg.inv(-omega**2*M+K),F)
+    eplo_p = np.dot(np.linalg.inv(-omega*omega*M+K),F)
 
     #Add back zeros (boundaries)
-    eplo = np.append(eplo_p[0:ix[0]],[0]*(len(ix)))
+    eplo = np.append(eplo_p[0:ix[0]],[0] * len(ix))
     eplo = np.append(eplo, eplo_p[ix[0]:])
     
     #Displacements only
@@ -160,7 +160,7 @@ for i in range(0,350):
     X,Y = np.meshgrid(X,Y)
     Z = np.real(eplo) 
     ssf.append(current_f)
-    ssmag.append(np.sqrt(np.mean(np.square(Z))))
+    ssmag.append(np.sqrt(np.mean(Z * Z)))
     #Z = np.multiply(1/np.max(np.abs(Z)),Z)
     
     fig, ax = plt.subplots() #RdBu, bone, etc (gg python colormaps)
@@ -197,10 +197,10 @@ plt.show()
 f = 80
 current_f = 160**(1.01+f/400.0)
 omega = 2*np.pi*current_f
-eplo_p = np.dot(np.linalg.inv(-omega**2*M+K),F)
+eplo_p = np.dot(np.linalg.inv(-omega*omega*M+K),F)
 
 #Add back zeros (boundaries)
-eplo = np.append(eplo_p[0:ix[0]],[0]*(len(ix)))
+eplo = np.append(eplo_p[0:ix[0]],[0] * len(ix))
 eplo = np.append(eplo, eplo_p[ix[0]:])
 
 #Displacements only
