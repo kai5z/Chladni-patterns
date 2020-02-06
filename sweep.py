@@ -2,6 +2,8 @@ from sympy import *
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+from scipy.sparse.linalg import spsolve
+from scipy.sparse import csr_matrix
 
 x,xi,ny,c = symbols('x xi ny c')
 w_e,h_e = symbols('w_e h_e')
@@ -145,7 +147,9 @@ for i in range(0,350):
     current_f = 160**(1.01+i/400.0)
     omega = 2*np.pi*current_f
         
-    eplo_p = np.dot(np.linalg.inv(-omega*omega*M+K),F)
+    # eplo_p = np.dot(np.linalg.inv(-omega*omega*M+K),F) #Slow
+    MK = csr_matrix(-omega**2*M+K)
+    eplo_p = spsolve(MK,F)
 
     #Add back zeros (boundaries)
     eplo = np.append(eplo_p[0:ix[0]],[0] * len(ix))
