@@ -59,7 +59,7 @@ expr_f = zeros(12,1)
 def Bb(ix):
     return Matrix([[0,dNNx[ix],0],[0,0,dNNy[ix]],[0,dNNy[ix],dNNx[ix]]])
 def Bs(ix):
-    return Matrix([[dNNx[ix],-NN[ix],0],[dNNy[ix],0,-NN[ix]]])
+    return Matrix([[dNNx[ix],-dNNy[ix],0],[dNNy[ix],0,-dNNx[ix]]])
 
 Bb_all = zeros(3,0)
 Bs_all = zeros(2,0)
@@ -77,8 +77,8 @@ expr_ke += kes
 expr_ke = expr_ke.applyfunc(lambda a: Jdet*integrate(integrate(a,(xi,-1,1)),(ny,-1,1)))
 
 #Element mass matrix
-for i in range(0,4):
-    for j in range(0,4):
+for j in range(0,4):
+    for i in range(0,4):
         Moo = Jdet*integrate(integrate(rho*t*NN[i]*NN[j],(xi,-1,1)),(ny,-1,1))
         Maa = Jdet*integrate(integrate(rho*t**3/12*NN[i]*NN[j],(xi,-1,1)),(ny,-1,1))
         
@@ -87,8 +87,9 @@ for i in range(0,4):
         expr_km[i*3+2,j*3+2] = Maa
 
 #Element force vector
-for i in range(0,4):
-    expr_f[i*3] = q*integrate(integrate(NN[i]*NN[j],(xi,-1,1)),(ny,-1,1))
+for j in range(0,4):
+    for u in range(0,4):
+        expr_f[i*3] = q*integrate(integrate(NN[i]*NN[j],(xi,-1,1)),(ny,-1,1))
 
 print("Element k- and m-matrix symbolic evaluation done")
 
@@ -128,13 +129,7 @@ print("Global K- and M-matrix addition done")
 
 #Apply boundary conditions, allow sliding along a vertical axis in the middle
 ix_i = int(nDOF/3/2)*3 #The middle vertical DOF
-ix = range(ix_i+1,ix_i+3)
-K = np.delete(K, ix, axis=0)
-K = np.delete(K, ix, axis=1)
-M = np.delete(M, ix, axis=0)
-M = np.delete(M, ix, axis=1)
-F = np.delete(F, ix, axis=0)
-F = np.delete(F, ix, axis=1)
+ix = range(ix_i,ix_i+3)
 
 #Vertical force in the middle
 F[:] = 0
@@ -151,12 +146,8 @@ for i in range(0,350):
     MK = csr_matrix(-omega**2*M+K)
     eplo_p = spsolve(MK,F)
 
-    #Add back zeros (boundaries)
-    eplo = np.append(eplo_p[0:ix[0]],[0] * len(ix))
-    eplo = np.append(eplo, eplo_p[ix[0]:])
-    
     #Displacements only
-    eplo = eplo[0::3]
+    eplo = eplo_p[0::3]
     eplo = np.reshape(eplo,((h_i+1),(w_i+1)))
     
     X = np.linspace(0,w_m,w_i+1)
@@ -170,7 +161,8 @@ for i in range(0,350):
     fig, ax = plt.subplots() #RdBu, bone, etc (gg python colormaps)
     Z_im = np.sqrt(np.sqrt(np.abs(Z)))
     im = plt.imshow(Z_im, cmap=cm.binary, vmin=Z_im.min(), vmax=Z_im.max(), extent=[0, w_m, 0, h_m])
-    im.set_interpolation('bicubic')#bilinear / nearest
+# Jun for debug use.    
+#    im.set_interpolation('bicubic')#bilinear / nearest
     
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
