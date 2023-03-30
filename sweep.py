@@ -134,8 +134,18 @@ K = np.delete(K, ix, axis=1)
 M = np.delete(M, ix, axis=0)
 M = np.delete(M, ix, axis=1)
 F = np.delete(F, ix, axis=0)
-F = np.delete(F, ix, axis=1)
-
+print("--------")
+print(F.shape)
+print("--------")
+print(F)
+print("--------")
+print(ix)
+print("--------")
+ix=np.array(ix)
+try:
+  F = np.delete(F, ix, axis=1)
+except:
+  pass
 #Vertical force in the middle
 F[:] = 0
 F[ix_i] = 1
@@ -256,3 +266,4 @@ for i in range(0,frames):
     
     plt.clf()
 """
+
